@@ -21,6 +21,8 @@ class PTTSpider(scrapy.Spider):
                 item = Post()
                 link, title=  entry.css(".title a")[0].re("href=\"(.*)\">(.*)<\/a>")
                 item["url"] = link
+                p0 = re.compile(ur'/(M\.[\d]*.*)\.html')
+                item["uid"] = re.search(p0, link).group(1)
                 item["title"] = title
                 p = re.compile(ur'\[(.*)\]')
                 tag = re.search(p, title).group(1)

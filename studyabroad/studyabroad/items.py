@@ -10,6 +10,7 @@ import scrapy
 
 class Post(scrapy.Item):
     url = scrapy.Field()
+    uid = scrapy.Field()
     title = scrapy.Field()
     tag = scrapy.Field()
     total_push = scrapy.Field()
