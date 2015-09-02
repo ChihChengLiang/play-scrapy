@@ -11,6 +11,7 @@ import scrapy
 class Post(scrapy.Item):
     url = scrapy.Field()
     title = scrapy.Field()
+    tag = scrapy.Field()
     total_push = scrapy.Field()
     mark = scrapy.Field()
     raw = scrapy.Field()

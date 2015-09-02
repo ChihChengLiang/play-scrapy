@@ -2,6 +2,7 @@
 import scrapy
 from studyabroad.items import Post
 from datetime import datetime
+import re
 
 class PTTSpider(scrapy.Spider):
     name = 'pttspider'
@@ -21,6 +22,10 @@ class PTTSpider(scrapy.Spider):
                 link, title=  entry.css(".title a")[0].re("href=\"(.*)\">(.*)<\/a>")
                 item["url"] = link
                 item["title"] = title
+                p = re.compile(ur'\[(.*)\]')
+                tag = re.search(p, title).group(1)
+                if tag:
+                    item["tag"] =tag
                 push_span = entry.css(".nrec span::text")
                 if len(push_span)>0:
                     item["total_push"] = push_span[0].extract()
