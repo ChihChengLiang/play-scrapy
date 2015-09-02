@@ -1,1 +1,1 @@
-scrapy runspider foo.py --logfile foo.log
+SCRAPY_SETTINGS_MODULE="settings" scrapy runspider foo.py
