@@ -4,6 +4,8 @@ from datetime import datetime
 class Post(scrapy.Item):
     url = scrapy.Field()
     title = scrapy.Field()
+    total_push = scrapy.Field()
+    mark = scrapy.Field()
     raw = scrapy.Field()
     content = scrapy.Field()
     author = scrapy.Field()
@@ -23,14 +25,18 @@ class PTTSpider(scrapy.Spider):
             yield scrapy.Request("https://www.ptt.cc/bbs/studyabroad/index%s.html" % index, self.parse_index_page)
 
     def parse_index_page(self, response):
-        for a in response.css('.title a'):
-            item = Post()
-            link, title=  a.re("href=\"(.*)\">(.*)<\/a>")
-            item["url"] = link
-            item["title"] = title
-            request = scrapy.Request(response.urljoin(link), self.parse_article)
-            request.meta['item'] = item
-            yield request
+        for entry in response.css('.r-ent'):
+            if len(entry.css(".title a"))>0:
+                item = Post()
+                link, title=  entry.css(".title a")[0].re("href=\"(.*)\">(.*)<\/a>")
+                item["url"] = link
+                item["title"] = title
+                push_span = entry.css(".nrec span::text")
+                if len(push_span)>0:
+                    item["total_push"] = push_span[0].extract()
+                request = scrapy.Request(response.urljoin(link), self.parse_article)
+                request.meta['item'] = item
+                yield request
 
     def parse_article(self, response):
         item = response.meta['item']
