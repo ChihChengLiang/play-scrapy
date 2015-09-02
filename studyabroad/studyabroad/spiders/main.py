@@ -1,18 +1,7 @@
+# -*- coding: utf-8 -*-
 import scrapy
+from studyabroad.items import Post
 from datetime import datetime
-import pymongo
-
-class Post(scrapy.Item):
-    url = scrapy.Field()
-    title = scrapy.Field()
-    total_push = scrapy.Field()
-    mark = scrapy.Field()
-    raw = scrapy.Field()
-    content = scrapy.Field()
-    author = scrapy.Field()
-    published = scrapy.Field()
-    comments = scrapy.Field()
-    ip = scrapy.Field()
 
 class PTTSpider(scrapy.Spider):
     name = 'pttspider'
@@ -23,7 +12,7 @@ class PTTSpider(scrapy.Spider):
         max_index = int(max_index_str)
 
         for index in range(max_index-1, max_index + 1):
-            yield scrapy.Request("https://www.ptt.cc/bbs/studyabroad/index%s.html" % index, self.parse_index_page)
+            yield scrapy.Request("http://www.ptt.cc/bbs/studyabroad/index%s.html" % index, self.parse_index_page)
 
     def parse_index_page(self, response):
         for entry in response.css('.r-ent'):
@@ -55,33 +44,5 @@ class PTTSpider(scrapy.Spider):
             p["content"]=push.css(".push-content::text")[0].extract().strip()[2:]
             p["ipdatetime"] = push.css(".push-ipdatetime::text")[0].extract().strip()
             comments.append(p)
+        item["comments"] = comments
         yield item
-
-
-
-
-class MongoPipeline(object):
-
-    collection_name = 'scrapy_ptt'
-
-    def __init__(self, mongo_uri, mongo_db):
-        self.mongo_uri = mongo_uri
-        self.mongo_db = mongo_db
-
-    @classmethod
-    def from_crawler(cls, crawler):
-        return cls(
-            mongo_uri=crawler.settings.get('MONGO_URI'),
-            mongo_db=crawler.settings.get('MONGO_DATABASE', 'items')
-        )
-
-    def open_spider(self, spider):
-        self.client = pymongo.MongoClient(self.mongo_uri)
-        self.db = self.client[self.mongo_db]
-
-    def close_spider(self, spider):
-        self.client.close()
-
-    def process_item(self, item, spider):
-        self.db[self.collection_name].insert(dict(item))
-        return item
