@@ -14,7 +14,7 @@ BOT_NAME = 'studyabroad'
 SPIDER_MODULES = ['studyabroad.spiders']
 NEWSPIDER_MODULE = 'studyabroad.spiders'
 
-LOG_FILE="foo.log"
+LOG_FILE="studyabroad.log"
 
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
 #USER_AGENT = 'studyabroad (+http://www.yourdomain.com)'
