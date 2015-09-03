@@ -38,7 +38,8 @@ class PTTSpider(scrapy.Spider):
     def parse_article(self, response):
         item = response.meta['item']
         item["raw"] = response.css("#main-content")[0].extract()
-        item["content"] = response.css("#main-content::text")[0].extract()
+        if len(response.css("#main-content::text"))>0:
+            item["content"] = response.css("#main-content::text")[0].extract()
         meta_value = response.css(".article-meta-value::text")
         if len(meta_value)>0:
             item["author"] = meta_value[0].extract()
