@@ -14,7 +14,9 @@ BOT_NAME = 'studyabroad'
 SPIDER_MODULES = ['studyabroad.spiders']
 NEWSPIDER_MODULE = 'studyabroad.spiders'
 
-LOG_FILE="studyabroad.log"
+from datetime import datetime
+
+LOG_FILE="studyabroad_%s.log" % datetime.isoformat(datetime.now())
 
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
 #USER_AGENT = 'studyabroad (+http://www.yourdomain.com)'
