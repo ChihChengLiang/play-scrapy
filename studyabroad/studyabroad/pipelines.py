@@ -31,5 +31,7 @@ class MongoPipeline(object):
         self.client.close()
 
     def process_item(self, item, spider):
-        self.db[self.collection_name].insert(dict(item))
+        collection = self.db[self.collection_name]
+        item_dic = dict(item)
+        collection.update({"uid":item_dic["uid"]}, item_dic, upsert=True)
         return item
